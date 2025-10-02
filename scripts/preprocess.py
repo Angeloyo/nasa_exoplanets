@@ -152,3 +152,8 @@ if __name__ == "__main__":
         df_simple = pd.read_csv(simple_path)
         print("\nEstadísticas del dataset SIMPLE generado:")
         print(df_simple['DISPOSITION_ENCODED'].value_counts())
+
+    if complex_path:
+        df_complex = pd.read_csv(complex_path)
+        print("\nEstadísticas del dataset COMPLEX generado:")
+        print(df_complex['DISPOSITION_ENCODED'].value_counts())
