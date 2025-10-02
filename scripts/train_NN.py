@@ -9,142 +9,206 @@ from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 import numpy as np
 
-# --- Constantes de Rutas ---
+# --- Constantes de Rutas y Configuración General ---
 PROCESSED_DIR = Path('data/processed')
-MODELS_DIR = Path('models/NN')
-MODELS_DIR.mkdir(parents=True, exist_ok=True) # Crear directorio para modelos NN
+ROOT_MODELS_DIR = Path('models')
+ML_MODELS_DIR = ROOT_MODELS_DIR / 'ML' # Usado para guardar el escalador/features por consistencia
+NN_MODELS_DIR = ROOT_MODELS_DIR / 'NN' # Directorio base para modelos NN
+NN_MODELS_DIR.mkdir(parents=True, exist_ok=True) 
 
-# --- Configuración de Entrenamiento ---
-RANDOM_STATE = 42
-TEST_SIZE = 0.2
-DATASET_TO_USE = 'simple' # Usaremos el conjunto 'simple' por consistencia inicial
-EPOCHS = 50
-BATCH_SIZE = 32
 # Número de clases (0:FP, 1:CANDIDATE, 2:CONFIRMED)
 NUM_CLASSES = 3 
+RANDOM_STATE = 42
+TEST_SIZE = 0.2
 
-def load_and_scale_data(dataset_name: str):
-    """Carga el dataset, lo divide en entrenamiento/prueba, lo escala y codifica las etiquetas."""
+# --- Configuración por defecto de la Arquitectura y Entrenamiento ---
+# Parámetros que puedes sobrescribir al llamar a train_nn_model
+DEFAULT_TRAIN_PARAMS = {
+    'epochs': 50,
+    'batch_size': 32,
+    'patience': 10,  # Para EarlyStopping
+}
+
+DEFAULT_ARCH_PARAMS = {
+    'layer_1_units': 64,
+    'layer_2_units': 32,
+    'dropout_rate': 0.2,
+}
+
+def get_dataset_folder_name(dataset_identifier: str):
+    """Normaliza el identificador del dataset a un nombre de carpeta."""
+    if dataset_identifier in ['simple_data', 'complex_data']:
+        return dataset_identifier
+    return 'user_data' 
+
+def load_and_scale_data(data_path: Path):
+    """Carga, escala y codifica las etiquetas para Keras."""
     
-    file_path = PROCESSED_DIR / f'{dataset_name}_data.csv'
-    print(f"1. Cargando y preparando datos para NN desde {file_path}...")
+    print(f"1. Cargando y preparando datos para NN desde {data_path}...")
     
     try:
-        df = pd.read_csv(file_path)
+        df = pd.read_csv(data_path)
     except FileNotFoundError:
-        print(f"ERROR: Archivo no encontrado en {file_path}. Asegúrate de que preprocess.py se ejecutó.")
-        return None, None, None, None, None, None
+        print(f"ERROR: Archivo no encontrado en {data_path}.")
+        return None
     
     # Separar características (X) y etiqueta (y)
     X = df.drop(columns=['DISPOSITION_ENCODED'])
     y = df['DISPOSITION_ENCODED']
-    
     feature_names = X.columns.tolist()
     
     # Dividir el dataset
-    X_train, X_test, y_train, y_test = train_test_split(
+    X_train, X_test, y_train_raw, y_test_raw = train_test_split(
         X, y, test_size=TEST_SIZE, random_state=RANDOM_STATE, stratify=y
     )
     
-    # 2. Escalar características (StandardScaler)
-    # Reutilizamos la lógica del escalador, guardándolo también para la API
-    print("2. Escalando características (StandardScaler)...")
+    # 2. Escalar características
+    print("2. Escaland")
     scaler = StandardScaler()
-    
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
     
-    # 3. One-Hot Encoding de la variable objetivo (CRUCIAL para Keras)
-    # Keras espera las etiquetas en formato one-hot para clasificación multi-clase
+    # 3. One-Hot Encoding
     print("3. Codificando etiquetas a One-Hot Encoding...")
-    y_train_encoded = to_categorical(y_train, num_classes=NUM_CLASSES)
-    y_test_encoded = to_categorical(y_test, num_classes=NUM_CLASSES)
+    y_train_encoded = to_categorical(y_train_raw, num_classes=NUM_CLASSES)
+    y_test_encoded = to_categorical(y_test_raw, num_classes=NUM_CLASSES)
     
-    # Guardar el escalador y los features en el directorio de ML para consistencia
-    # (Ya que solo necesitamos un escalador ajustado)
-    ml_models_dir = Path('models/ML')
-    joblib.dump(scaler, ml_models_dir / 'scaler.pkl')
-    joblib.dump(feature_names, ml_models_dir / 'features.pkl')
+    # Identificador del dataset para la carpeta
+    dataset_identifier = data_path.stem
     
-    return X_train_scaled, X_test_scaled, y_train_encoded, y_test_encoded, scaler, feature_names, X_test, y_test
+    return (X_train_scaled, X_test_scaled, y_train_encoded, y_test_encoded, 
+            scaler, feature_names, y_test_raw, dataset_identifier)
 
-def build_nn_model(input_shape):
-    """Define la arquitectura de la Red Neuronal (MLP simple)."""
+def build_nn_model(input_shape, arch_params: dict):
+    """Define la arquitectura de la Red Neuronal (MLP) con parámetros variables."""
     
     print("4. Construyendo la arquitectura de la Red Neuronal...")
     
     model = Sequential([
-        # Capa de entrada: input_shape es el número de características (4 en este caso)
-        Dense(64, activation='relu', input_shape=(input_shape,)),
-        # Dropout para prevenir el sobreajuste
-        Dropout(0.2), 
-        Dense(32, activation='relu'),
-        # Capa de salida: 3 neuronas (una por clase) y activación softmax para probabilidades
+        Dense(arch_params['layer_1_units'], activation='relu', input_shape=(input_shape,)),
+        Dropout(arch_params['dropout_rate']), 
+        Dense(arch_params['layer_2_units'], activation='relu'),
+        # Capa de salida
         Dense(NUM_CLASSES, activation='softmax') 
     ])
     
-    # Compilación: 'categorical_crossentropy' es la función de pérdida estándar para OHE
     model.compile(
         optimizer='adam', 
         loss='categorical_crossentropy', 
         metrics=['accuracy']
     )
     
-    model.summary()
+    model.summary(print_fn=lambda x: print("   " + x)) # Imprimir con indentación
     return model
 
-def main():
-    """Función principal del script de entrenamiento de NN."""
+def train_nn_model(
+    data_path: Path, 
+    arch_params: dict = None, 
+    train_params: dict = None
+):
+    """
+    Función principal modular para entrenar y guardar una Red Neuronal.
+    """
     
+    # --- 0. Preparar Parámetros ---
+    arch_params_final = {**DEFAULT_ARCH_PARAMS, **(arch_params or {})}
+    train_params_final = {**DEFAULT_TRAIN_PARAMS, **(train_params or {})}
+    
+    print("\n--- Iniciando Entrenamiento de Red Neuronal ---")
+
     # 1-3. Cargar y Preparar Datos
-    results = load_and_scale_data(DATASET_TO_USE)
+    results = load_and_scale_data(data_path)
     if results is None:
-        return
+        return False
     
-    X_train, X_test, y_train_encoded, y_test_encoded, scaler, feature_names, X_test_raw, y_test_raw = results
+    (X_train, X_test, y_train_encoded, y_test_encoded, 
+     scaler, feature_names, y_test_raw, dataset_identifier) = results
     
     # 4. Construir Modelo
     input_shape = X_train.shape[1]
-    nn_model = build_nn_model(input_shape)
+    nn_model = build_nn_model(input_shape, arch_params_final)
+    
+    # --- 5. Definir Rutas de Guardado ---
+    
+    # Estructura: models/NN/nn_custom/{simple_data}/
+    dataset_folder = get_dataset_folder_name(dataset_identifier)
+    save_dir = NN_MODELS_DIR / 'nn_custom' / dataset_folder
+    save_dir.mkdir(parents=True, exist_ok=True)
     
     # Definir Callbacks
-    # EarlyStopping: Detener el entrenamiento si la accuracy no mejora para evitar el sobreajuste
+    checkpoint_path = save_dir / 'model_best.keras'
+    
     early_stop = EarlyStopping(
         monitor='val_loss', 
-        patience=10, 
+        patience=train_params_final['patience'], 
         restore_best_weights=True
     )
-    # ModelCheckpoint: Guardar solo la mejor versión del modelo (basada en la validation loss)
-    checkpoint_path = MODELS_DIR / 'nn_model_best.keras'
     checkpoint = ModelCheckpoint(
         checkpoint_path, 
         monitor='val_loss', 
         save_best_only=True, 
-        verbose=1
+        verbose=0 # Silenciar el checkpoint para un output más limpio
     )
     
-    # 5. Entrenar Modelo
-    print("\n5. Entrenando Red Neuronal...")
-    history = nn_model.fit(
+    # 6. Entrenar Modelo
+    print(f"\n6. Entrenando Red Neuronal en {dataset_identifier}...")
+    nn_model.fit(
         X_train, 
         y_train_encoded, 
-        epochs=EPOCHS, 
-        batch_size=BATCH_SIZE, 
-        validation_data=(X_test, y_test_encoded), # Usamos X_test/y_test para validación
+        epochs=train_params_final['epochs'], 
+        batch_size=train_params_final['batch_size'], 
+        validation_data=(X_test, y_test_encoded),
         callbacks=[early_stop, checkpoint],
         verbose=1
     )
     
-    # 6. Guardar Modelo (por si acaso el checkpoint no lo hizo, aunque el checkpoint es mejor)
-    final_model_path = MODELS_DIR / 'nn_model_final.keras'
-    nn_model.save(final_model_path)
-    print(f"   Modelo final de NN guardado en: {final_model_path}")
+    # 7. Guardar Artefactos (con nombres genéricos)
     
-    # 7. Guardar los datos de prueba sin codificar para el script de evaluación
-    joblib.dump((X_test, y_test_raw), MODELS_DIR / 'test_data_nn.pkl')
-    print("   Datos de prueba de NN guardados para evaluación posterior.")
-    print("------------------------------------------------------")
-    print("¡Entrenamiento de Red Neuronal completado!")
+    # Guardar el modelo final (además del mejor guardado por el checkpoint)
+    nn_model.save(save_dir / 'model.keras')
+    print(f"   -> Modelo final de NN guardado en: {save_dir / 'model.keras'}")
+    
+    # Guardar el escalador (necesario para la predicción)
+    joblib.dump(scaler, save_dir / 'scaler.pkl')
+    
+    # Guardar los datos de prueba (X_test escalado y y_test_raw)
+    joblib.dump((X_test, y_test_raw), save_dir / 'test_data.pkl')
+    
+    print(f"--- ¡Entrenamiento NN Finalizado en {dataset_folder}! ---")
+    return True
+
 
 if __name__ == "__main__":
-    main()
+    
+    # Crear la carpeta de usuario NN_CUSTOM
+    (NN_MODELS_DIR / 'nn_custom').mkdir(parents=True, exist_ok=True)
+    
+    # Rutas a los datasets
+    simple_data_path = PROCESSED_DIR / 'simple_data.csv'
+    complex_data_path = PROCESSED_DIR / 'complex_data.csv'
+
+    # ======================================================
+    # 1. NN en SIMPLE (Usando parámetros por defecto)
+    # ======================================================
+    train_nn_model(
+        data_path=simple_data_path,
+    )
+
+    # ======================================================
+    # 2. NN en COMPLEX (Usando parámetros de arquitectura y entrenamiento personalizados)
+    # ======================================================
+    custom_arch = {
+        'layer_1_units': 128, # Más neuronas en la primera capa
+        'layer_2_units': 64, 
+        'dropout_rate': 0.3, # Más dropout
+    }
+    custom_train = {
+        'epochs': 100,      # Más épocas
+        'batch_size': 64,   # Batch size más grande
+    }
+    
+    train_nn_model(
+        data_path=complex_data_path,
+        arch_params=custom_arch,
+        train_params=custom_train
+    )

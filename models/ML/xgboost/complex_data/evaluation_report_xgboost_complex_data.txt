@@ -1,0 +1,22 @@
+
+======================================================================
+RESULTADOS DEL MODELO: XGBoost
+======================================================================
+Accuracy General: 0.8012
+
+Matriz de Confusión:
+[[ 910  292   64]
+ [ 196 1309  101]
+ [  44   75  893]]
+
+Informe de Clasificación (Precision, Recall, F1-Score):
+                precision    recall  f1-score   support
+
+FALSE POSITIVE       0.79      0.72      0.75      1266
+CANDIDATE (PC)       0.78      0.82      0.80      1606
+CONFIRMED (CP)       0.84      0.88      0.86      1012
+
+      accuracy                           0.80      3884
+     macro avg       0.81      0.81      0.80      3884
+  weighted avg       0.80      0.80      0.80      3884
+

@@ -3,14 +3,11 @@ from pathlib import Path
 from tensorflow.keras.models import load_model
 import numpy as np
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
-import pandas as pd
 
-# --- Constantes de Rutas ---
-MODELS_DIR = Path('models/NN')
-REPORT_PATH = MODELS_DIR / 'evaluation_report_nn.txt'
-MODEL_NAME = 'nn_model_best.keras' # Usamos el mejor modelo guardado por ModelCheckpoint
+# --- Constantes y Mapeo ---
+ROOT_MODELS_DIR = Path('models') 
+NN_MODELS_DIR = ROOT_MODELS_DIR / 'NN' 
 
-# --- Mapeo Inverso de Etiquetas (para el informe) ---
 # Recordatorio: 0=FALSE POSITIVE, 1=CANDIDATE, 2=CONFIRMED
 LABEL_MAP = {
     0: 'FALSE POSITIVE',
@@ -18,55 +15,60 @@ LABEL_MAP = {
     2: 'CONFIRMED (CP)'
 }
 
-def load_nn_model_and_data():
-    """Carga el modelo de Red Neuronal (Keras) y los datos de prueba."""
+def load_nn_artifacts_for_evaluation(dataset_identifier: str, base_dir: Path):
+    """Carga el modelo de Red Neuronal (Keras) y los datos de prueba desde la ruta modular."""
     
-    print("1. Cargando modelo de NN y datos de prueba...")
+    model_name = 'NN Custom' # Nombre lógico para el informe
+    
+    # 1. Construir la ruta de guardado (ej: models/NN/nn_custom/simple_data/)
+    # La carpeta del algoritmo de NN es fija: 'nn_custom'
+    data_dir = base_dir / 'nn_custom' / dataset_identifier 
+    
+    # Los nombres de los archivos son genéricos
+    model_file = 'model.keras' 
+    test_data_file = 'test_data.pkl' 
+
+    print(f"1. Cargando artefactos de la ruta: {data_dir}")
     
     try:
         # Cargar el modelo Keras
-        nn_model = load_model(MODELS_DIR / MODEL_NAME)
+        nn_model = load_model(data_dir / model_file)
         
         # Cargar los datos de prueba (X_test_scaled, y_test_raw)
-        X_test_scaled, y_test_raw = joblib.load(MODELS_DIR / 'test_data_nn.pkl')
+        X_test_scaled, y_test_raw = joblib.load(data_dir / test_data_file)
         
-        print(f"   Modelo {MODEL_NAME} y datos cargados. Tamaño: {len(y_test_raw)} muestras.")
+        print(f"   Modelo '{model_name}' y datos cargados. Tamaño: {len(y_test_raw)} muestras.")
         
         return nn_model, X_test_scaled, y_test_raw
         
     except FileNotFoundError as e:
-        print(f"ERROR: Archivo no encontrado. Asegúrate de que train_NN.py se ejecutó con éxito.")
+        print(f"ERROR: Archivo no encontrado. Asegúrate de que train_NN.py se ejecutó con éxito en '{dataset_identifier}'.")
         print(f"Ruta faltante: {e}")
         return None, None, None
 
-def evaluate_nn_model(model, X_test, y_test_true, report_file):
+def generate_nn_evaluation_report(model, X_test, y_test_true, model_name: str, report_file):
     """Realiza predicciones, convierte a etiquetas discretas y genera métricas."""
     
-    print("\n2. Evaluando: Red Neuronal...")
+    print(f"\n2. Evaluando: {model_name}...")
     
-    # 2.1. Realizar predicciones
-    # El modelo Keras devuelve probabilidades (One-Hot Encoded)
+    # 2.1. Realizar predicciones y convertir a etiquetas discretas
     y_pred_proba = model.predict(X_test, verbose=0)
-    
-    # Convertir probabilidades a etiquetas discretas (el índice con la probabilidad más alta)
-    y_pred = np.argmax(y_pred_proba, axis=1)
+    y_pred = np.argmax(y_pred_proba, axis=1) # Convertir OHE a clases 0, 1, 2
     
     # Escribir encabezado en el informe
-    report_file.write(f"\n{'='*50}\n")
-    report_file.write("RESULTADOS DEL MODELO: Red Neuronal (Keras)\n")
-    report_file.write(f"{'='*50}\n")
+    report_file.write(f"\n{'='*70}\n")
+    report_file.write(f"RESULTADOS DEL MODELO: {model_name}\n")
+    report_file.write(f"{'='*70}\n")
     
-    # 2.2. Accuracy General
+    # 2.2. Métricas
     accuracy = accuracy_score(y_test_true, y_pred)
     print(f"   -> Accuracy General: {accuracy:.4f}")
     report_file.write(f"Accuracy General: {accuracy:.4f}\n\n")
 
-    # 2.3. Matriz de Confusión
     cm = confusion_matrix(y_test_true, y_pred)
     print(f"   -> Matriz de Confusión:\n{cm}")
     report_file.write(f"Matriz de Confusión:\n{cm}\n\n")
     
-    # 2.4. Classification Report
     class_names = [LABEL_MAP[i] for i in sorted(LABEL_MAP.keys())]
     report = classification_report(y_test_true, y_pred, target_names=class_names, output_dict=False)
     
@@ -74,24 +76,54 @@ def evaluate_nn_model(model, X_test, y_test_true, report_file):
     report_file.write("Informe de Clasificación (Precision, Recall, F1-Score):\n" + report + "\n")
 
 
-def main():
-    """Función principal para cargar, evaluar y guardar los resultados de la NN."""
+def evaluate_nn_model(dataset_identifier: str, base_output_dir: Path):
+    """
+    Función principal modular para cargar, evaluar y guardar el informe de la NN.
     
-    # Cargar datos y modelo
-    nn_model, X_test, y_test_true = load_nn_model_and_data()
+    :param dataset_identifier: Nombre de la carpeta del dataset (e.g., 'simple_data', 'complex_data').
+    :param base_output_dir: Directorio base de modelos NN (Path('models/NN')).
+    :return: Ruta al informe generado o None.
+    """
+    model_name = f'NN Custom ({dataset_identifier})'
+    
+    # Cargar artefactos
+    nn_model, X_test, y_test_true = load_nn_artifacts_for_evaluation(dataset_identifier, base_output_dir)
     
     if nn_model is None:
-        return
+        return None
 
+    # Ruta de guardado: models/NN/nn_custom/{dataset}/
+    report_dir = base_output_dir / 'nn_custom' / dataset_identifier
+    report_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Nombre del informe
+    report_path = report_dir / f'evaluation_report_nn_{dataset_identifier}.txt'
+    
     # Abrir el archivo de informe para escribir los resultados
-    print(f"\n3. Guardando resultados detallados en: {REPORT_PATH}")
-    with open(REPORT_PATH, 'w') as report_file:
-        evaluate_nn_model(nn_model, X_test, y_test_true, report_file)
+    print(f"\n3. Guardando resultados detallados en: {report_path}")
+    with open(report_path, 'w') as report_file:
+        generate_nn_evaluation_report(nn_model, X_test, y_test_true, model_name, report_file)
 
     print("\n------------------------------------------------------")
-    print("¡Evaluación de Red Neuronal completada!")
-    print(f"Revisa {REPORT_PATH} para el análisis detallado.")
-    print("------------------------------------------------------")
+    print(f"¡Evaluación de Red Neuronal en {dataset_identifier} completada!")
+    return report_path
+
 
 if __name__ == "__main__":
-    main()
+    
+    # Lista de datasets a evaluar (asumiendo que train_NN.py ya los generó)
+    datasets_to_evaluate = [
+        'simple_data',
+        'complex_data',
+    ]
+    
+    print("======================================================")
+    print("Iniciando Evaluación de Redes Neuronales...")
+    
+    for dataset_id in datasets_to_evaluate:
+        evaluate_nn_model(
+            dataset_identifier=dataset_id,
+            base_output_dir=NN_MODELS_DIR
+        )
+
+    print("======================================================")

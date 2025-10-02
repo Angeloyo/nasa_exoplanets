@@ -1,0 +1,22 @@
+
+======================================================================
+RESULTADOS DEL MODELO: RandomForest
+======================================================================
+Accuracy General: 0.7979
+
+Matriz de Confusión:
+[[ 932  257   77]
+ [ 218 1234  154]
+ [  50   29  933]]
+
+Informe de Clasificación (Precision, Recall, F1-Score):
+                precision    recall  f1-score   support
+
+FALSE POSITIVE       0.78      0.74      0.76      1266
+CANDIDATE (PC)       0.81      0.77      0.79      1606
+CONFIRMED (CP)       0.80      0.92      0.86      1012
+
+      accuracy                           0.80      3884
+     macro avg       0.80      0.81      0.80      3884
+  weighted avg       0.80      0.80      0.80      3884
+
