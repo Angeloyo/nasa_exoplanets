@@ -4,7 +4,6 @@ venv/
 __pycache__/
 
 # Archivos de Datos Grandes y Procesados
-data/processed/
 data/raw/*.csv # No subir los datasets grandes
 *.xlsx
 
