@@ -14,7 +14,7 @@ MODELS_DIR.mkdir(parents=True, exist_ok=True) # Asegurar que el directorio de mo
 # --- Configuración de Entrenamiento ---
 RANDOM_STATE = 42
 TEST_SIZE = 0.2
-DATASET_TO_USE = 'simple' # O 'complex' si prefieres empezar con más features
+DATASET_TO_USE = 'complex' # O 'complex' si prefieres empezar con más features
 
 def load_and_scale_data(dataset_name: str):
     """Carga el dataset, lo divide en entrenamiento/prueba y lo escala."""

@@ -2,43 +2,43 @@
 ==================================================
 RESULTADOS DEL MODELO: RandomForest
 ==================================================
-Accuracy General: 0.7134
+Accuracy General: 0.7832
 
 Matriz de Confusión:
-[[ 872  245  149]
- [ 216 1051  339]
- [  61  103  848]]
+[[ 934  239   93]
+ [ 222 1165  219]
+ [  55   14  943]]
 
 Informe de Clasificación (Precision, Recall, F1-Score):
                 precision    recall  f1-score   support
 
-FALSE POSITIVE       0.76      0.69      0.72      1266
-CANDIDATE (PC)       0.75      0.65      0.70      1606
-CONFIRMED (CP)       0.63      0.84      0.72      1012
+FALSE POSITIVE       0.77      0.74      0.75      1266
+CANDIDATE (PC)       0.82      0.73      0.77      1606
+CONFIRMED (CP)       0.75      0.93      0.83      1012
 
-      accuracy                           0.71      3884
-     macro avg       0.71      0.73      0.71      3884
-  weighted avg       0.72      0.71      0.71      3884
+      accuracy                           0.78      3884
+     macro avg       0.78      0.80      0.79      3884
+  weighted avg       0.79      0.78      0.78      3884
 
 
 ==================================================
 RESULTADOS DEL MODELO: XGBoost
 ==================================================
-Accuracy General: 0.7271
+Accuracy General: 0.7953
 
 Matriz de Confusión:
-[[ 842  325   99]
- [ 171 1245  190]
- [  62  213  737]]
+[[ 896  309   61]
+ [ 198 1301  107]
+ [  46   74  892]]
 
 Informe de Clasificación (Precision, Recall, F1-Score):
                 precision    recall  f1-score   support
 
-FALSE POSITIVE       0.78      0.67      0.72      1266
-CANDIDATE (PC)       0.70      0.78      0.73      1606
-CONFIRMED (CP)       0.72      0.73      0.72      1012
+FALSE POSITIVE       0.79      0.71      0.74      1266
+CANDIDATE (PC)       0.77      0.81      0.79      1606
+CONFIRMED (CP)       0.84      0.88      0.86      1012
 
-      accuracy                           0.73      3884
-     macro avg       0.73      0.72      0.73      3884
-  weighted avg       0.73      0.73      0.73      3884
+      accuracy                           0.80      3884
+     macro avg       0.80      0.80      0.80      3884
+  weighted avg       0.79      0.80      0.79      3884
 
