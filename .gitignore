@@ -1,0 +1,17 @@
+# Entorno Virtual
+nasa/
+venv/
+__pycache__/
+
+# Archivos de Datos Grandes y Procesados
+data/processed/
+data/raw/*.csv # No subir los datasets grandes
+*.xlsx
+
+# Archivos de Modelos
+models/*.pkl
+models/*.h5
+models/*.json
+
+# Archivos de Streamlit/API si se generan
+.streamlit/
