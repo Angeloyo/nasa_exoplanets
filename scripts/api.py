@@ -1,53 +1,51 @@
 from fastapi import FastAPI, UploadFile, File
 from pathlib import Path
 import shutil
-import pandas as pd
+import subprocess
 
-# Importa tus funciones de evaluación
 from evaluation_ML import evaluate_ml_model, ML_MODELS_DIR
 from evaluation_NN import evaluate_nn_model, NN_MODELS_DIR
 
 app = FastAPI(title="NASA Exoplanets API")
 
-UPLOAD_DIR = Path("uploads")
-UPLOAD_DIR.mkdir(exist_ok=True)
+UPLOAD_DIR = Path("data/processed/uploaded")
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 
-@app.post("/upload")
-async def upload_csv(file: UploadFile = File(...), model_type: str = "ML", dataset: str = "simple_data"):
-    """
-    Sube un CSV, lo guarda temporalmente y ejecuta la evaluación.
-    - model_type: "ML" o "NN"
-    - dataset: "simple_data" o "complex_data"
-    """
-
-    file_path = UPLOAD_DIR / file.filename
+@app.post("/evaluate")
+async def evaluate_csv(file: UploadFile = File(...)):
+    # Guardar CSV en la carpeta de processed
+    file_path = UPLOAD_DIR / "uploaded.csv"
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
-    # Validar CSV
+    # Ejecutar el preprocesado para generar test_data.pkl
     try:
-        df = pd.read_csv(file_path)
-    except Exception as e:
-        return {"error": f"El archivo no es un CSV válido: {str(e)}"}
+        subprocess.run(["python", "scripts/preprocess.py", str(file_path)], check=True)
+    except subprocess.CalledProcessError as e:
+        return {"error": f"Fallo en el preprocesado: {e}"}
 
-    # Ejecutar la evaluación
-    if model_type.upper() == "ML":
-        # Evaluar RandomForest y XGBoost en el dataset indicado
-        reports = []
-        for model_name in ["RandomForest", "XGBoost"]:
-            report_path = evaluate_ml_model(model_name, dataset_identifier=dataset, base_output_dir=ML_MODELS_DIR)
-            reports.append(str(report_path) if report_path else f"{model_name} no disponible")
-        return {"status": "ok", "model_type": "ML", "reports": reports}
+    reports = {}
 
-    elif model_type.upper() == "NN":
-        report_path = evaluate_nn_model(dataset_identifier=dataset, base_output_dir=NN_MODELS_DIR)
-        return {"status": "ok", "model_type": "NN", "report": str(report_path)}
+    # Evaluar ML
+    for model_name in ["RandomForest", "XGBoost"]:
+        report_path = evaluate_ml_model(
+            model_name=model_name,
+            dataset_identifier="uploaded",
+            base_output_dir=ML_MODELS_DIR
+        )
+        reports[model_name] = str(report_path) if report_path else "Error"
 
-    else:
-        return {"error": "Tipo de modelo no válido. Usa 'ML' o 'NN'."}
+    # Evaluar NN
+    report_path = evaluate_nn_model(
+        dataset_identifier="uploaded",
+        base_output_dir=NN_MODELS_DIR
+    )
+    reports["NN Custom"] = str(report_path) if report_path else "Error"
+
+    return {"status": "ok", "reports": reports}
 
 
 @app.get("/")
 def root():
-    return {"message": "NASA Exoplanets API lista 🚀"}
+    return {"message": "NASA Exoplanets API"}
