@@ -14,3 +14,7 @@ models/*.json
 
 # Archivos de Streamlit/API si se generan
 .streamlit/
+
+#Angel
+.cursorrules
+noupload/
