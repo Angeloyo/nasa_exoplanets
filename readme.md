@@ -41,28 +41,6 @@ We trained and compared several models:
 
 XGBoost achieved the best performance with 80% accuracy on validation data.
 
-## ⚙️ Project structure
-
-nasa_exoplanets/
-
-│── data/                 # datasets (Kepler, K2, TESS)
-
-│   ├── raw/              # raw datasets
-
-│   └── processed/        # clean and merged data
-
-│── models/               # trained models
-
-│── scripts/              # API, preprocessing, training, evaluation
-
-│── web/                  # UI
-
-│── .gitignore
-
-│── requirements.txt    
-
-└── README.md             
-
 ## 🔧 Installation & Execution
 
 ### Dependencies
