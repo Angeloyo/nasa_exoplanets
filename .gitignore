@@ -18,3 +18,4 @@ models/*.json
 #Angel
 .cursorrules
 noupload/
+.DS_Store
