@@ -111,7 +111,8 @@ Deployed on [Vercel](https://vercel.com).
 - **URL**: https://exoexplorer.study
 - **CI/CD**: Automatic deployments from GitHub, set "frontend" as base directory. 
 
-Both services automatically rebuild and deploy when changes are pushed to the repository.
+<img width="2492" height="1660" alt="arch2" src="https://github.com/user-attachments/assets/60dbd4d7-65d8-4389-ae51-e1533d669e13" />
+
 
 ## 🌍 Impact
 
