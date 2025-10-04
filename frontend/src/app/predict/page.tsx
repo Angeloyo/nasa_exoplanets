@@ -52,11 +52,15 @@ export default function PredictPage() {
     setIsLoading(true);
     setError(null);
 
+    const API_URL = process.env.NODE_ENV === 'development' 
+      ? 'http://localhost:8000' 
+      : 'https://api.exoexplorer.study';
+
     try {
       const formData = new FormData();
       formData.append('file', file);
 
-      const res = await fetch('http://localhost:8000/predict', {
+      const res = await fetch(`${API_URL}/predict`, {
         method: 'POST',
         body: formData,
       });
