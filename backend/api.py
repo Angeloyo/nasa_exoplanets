@@ -14,7 +14,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-MODEL_PATH = Path(__file__).parent.parent / "models/ML/xgboost/complex_data"
+MODEL_PATH = Path(__file__).parent / "models/ML/xgboost/complex_data"
 CONSTELLATIONS = ["Draco", "Lyra", "Cygnus", "Andromeda", "Orion", "Perseus", 
                   "Cassiopeia", "Phoenix", "Pegasus", "Vega", "Centaurus", "Aquila"]
 LABEL_MAP = {0: "None", 1: "Candidate", 2: "Exoplanet"}
