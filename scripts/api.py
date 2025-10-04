@@ -1,45 +1,58 @@
 from fastapi import FastAPI, UploadFile, File
+from fastapi.middleware.cors import CORSMiddleware
 from pathlib import Path
-import shutil
-import json
-
-from evaluation_ML import evaluate_ml_model, ML_MODELS_DIR
+import pandas as pd
+import joblib
+import random
 
 app = FastAPI(title="NASA Exoplanets API")
 
-# Carpeta donde se guardan los CSV subidos
-UPLOAD_DIR = Path("data/processed/uploaded")
-UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
+MODEL_PATH = Path(__file__).parent.parent / "models/ML/xgboost/complex_data"
+CONSTELLATIONS = ["Draco", "Lyra", "Cygnus", "Andromeda", "Orion", "Perseus", 
+                  "Cassiopeia", "Phoenix", "Pegasus", "Vega", "Centaurus", "Aquila"]
+LABEL_MAP = {0: "None", 1: "Candidate", 2: "Exoplanet"}
 
-@app.post("/evaluate")
-async def evaluate_csv(file: UploadFile = File(...)):
-    # Guardar CSV subido
-    file_path = UPLOAD_DIR / "uploaded.csv"
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
+def generate_name(index):
+    const = random.choice(CONSTELLATIONS)
+    num = random.randint(1, 99)
+    letter = random.choice("ABCDEFGH")
+    return f"{const}-{num}{letter}"
 
-    # XGBoost
-    model_name = "XGBoost"
-    report_path = evaluate_ml_model(
-        model_name=model_name,
-        dataset_identifier="uploaded",
-        base_output_dir=ML_MODELS_DIR
-    )
+@app.post("/predict")
+async def predict(file: UploadFile = File(...)):
+    try:
+        df = pd.read_csv(file.file)
+        
+        if 'DISPOSITION_ENCODED' in df.columns:
+            df = df.drop(columns=['DISPOSITION_ENCODED'])
+        
+        model = joblib.load(MODEL_PATH / "model.pkl")
+        scaler = joblib.load(MODEL_PATH / "scaler.pkl")
+        
+        X_scaled = scaler.transform(df)
+        y_pred = model.predict(X_scaled)
+        y_proba = model.predict_proba(X_scaled)
+        
+        predictions = [
+            {
+                "name": generate_name(i),
+                "prediction": LABEL_MAP[y_pred[i]],
+                "confidence": round(float(y_proba[i][y_pred[i]] * 100), 1)
+            }
+            for i in range(len(y_pred))
+        ]
 
-    if report_path:
-        report_dir = report_path.parent
-        json_path = report_dir / f"predictions_{model_name.lower()}.json"
-        if json_path.exists():
-            with open(json_path, "r") as jf:
-                predictions = json.load(jf)
-        else:
-            predictions = "JSON no encontrado"
-    else:
-        predictions = "Error en evaluación ML"
-
-    return {"status": "ok", "model": model_name, "predictions": predictions}
-
+        return {"status": "success", "model": "XGBoost", "total": len(predictions), "predictions": predictions}
+    
+    except Exception as e:
+        return {"status": "error", "error": str(e)}
 
 @app.get("/")
 def root():
