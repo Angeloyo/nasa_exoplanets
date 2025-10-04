@@ -71,6 +71,44 @@ async def predict(file: UploadFile = File(...)):
     except Exception as e:
         return {"status": "error", "error": str(e)}
 
+@app.post("/predict/sample")
+async def predict_sample():
+    try:
+        # Load sample data
+        # sample_path = Path(__file__).parent.parent / "data/sample/complex_data_sample_A.csv"
+        sample_path = Path(__file__).parent.parent / "data/sample/complex_data_sample_B.csv"
+        df = pd.read_csv(sample_path)
+        
+        if 'DISPOSITION_ENCODED' in df.columns:
+            df = df.drop(columns=['DISPOSITION_ENCODED'])
+        
+        # Store radius and density before scaling
+        radius_values = df['RADIUS'].values if 'RADIUS' in df.columns else None
+        density_values = df['DENSITY'].values if 'DENSITY' in df.columns else None
+        
+        model = joblib.load(MODEL_PATH / "model.pkl")
+        scaler = joblib.load(MODEL_PATH / "scaler.pkl")
+        
+        X_scaled = scaler.transform(df)
+        y_pred = model.predict(X_scaled)
+        y_proba = model.predict_proba(X_scaled)
+        
+        predictions = [
+            {
+                "name": generate_name(i),
+                "prediction": LABEL_MAP[y_pred[i]],
+                "confidence": round(float(y_proba[i][y_pred[i]] * 100), 1),
+                "radius": float(radius_values[i]) if radius_values is not None else None,
+                "density": float(density_values[i]) if density_values is not None else None
+            }
+            for i in range(len(y_pred))
+        ]
+
+        return {"status": "success", "model": "XGBoost", "total": len(predictions), "predictions": predictions}
+    
+    except Exception as e:
+        return {"status": "error", "error": str(e)}
+
 @app.post("/predict/single")
 async def predict_single(data: SinglePredictionRequest):
     try:

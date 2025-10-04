@@ -96,6 +96,34 @@ export default function PredictPage() {
     setError(null);
   };
 
+  const handleLoadSample = async () => {
+    setIsLoading(true);
+    setError(null);
+    setActiveTab('batch');
+
+    const API_URL = process.env.NODE_ENV === 'development' 
+      ? 'http://localhost:8000' 
+      : 'https://api.exoexplorer.study';
+
+    try {
+      const res = await fetch(`${API_URL}/predict/sample`, {
+        method: 'POST',
+      });
+
+      const data = await res.json();
+
+      if (data.status === 'success') {
+        setPredictions(data.predictions);
+      } else {
+        setError(data.error || 'Something went wrong');
+      }
+    } catch {
+      setError('Failed to connect. Make sure the API is running on port 8000');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handlePredict = async () => {
     if (!file) return;
     setIsLoading(true);
@@ -200,6 +228,24 @@ export default function PredictPage() {
           <p className="text-base sm:text-lg text-gray-600">
             Upload your astronomical data to detect potential exoplanets
           </p>
+        </div>
+
+        {/* Quick Info Section */}
+        <div className="mb-8 sm:mb-12 bg-blue-50 border border-blue-200 rounded-xl p-6">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3">
+            Quick Info
+          </h2>
+          <p className="text-sm sm:text-base text-gray-700 mb-4 leading-relaxed">
+            This project was aimed for researchers who want to quickly classify their points of interest data, 
+            saving them countless hours of manual classification. Want to see it in action? Try it with our sample data!
+          </p>
+          <button
+            onClick={handleLoadSample}
+            disabled={isLoading}
+            className="bg-blue-600 text-white py-2 px-6 rounded-lg text-sm sm:text-base font-semibold hover:bg-blue-700 transition-colors duration-200 flex items-center gap-2 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Try Sample Data
+          </button>
         </div>
 
         {/* Prediction Section with Tabs */}
