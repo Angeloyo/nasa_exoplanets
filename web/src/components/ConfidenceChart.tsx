@@ -19,7 +19,7 @@ import { ChartConfig, ChartContainer } from "@/components/ui/chart"
 
 interface ConfidenceChartProps {
   averageConfidence: number;
-  totalPredictions: number;
+  totalPredictions?: number;
 }
 
 const chartConfig = {
@@ -29,7 +29,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function ConfidenceChart({ averageConfidence, totalPredictions }: ConfidenceChartProps) {
+export function ConfidenceChart({ averageConfidence }: ConfidenceChartProps) {
   const chartData = [
     { 
       name: "confidence", 

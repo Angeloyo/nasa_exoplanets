@@ -30,7 +30,7 @@ export default function Home() {
               Discover Exoplanets with AI
             </h2>
             <p className="text-xl text-gray-300">
-              Automated exoplanet detection using machine learning on NASA's Kepler, K2, and TESS datasets
+              Automated exoplanet detection using machine learning on NASA&apos;s Kepler, K2, and TESS datasets
             </p>
           </div>
 

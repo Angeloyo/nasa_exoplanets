@@ -23,10 +23,10 @@ export default function LearnPage() {
           <div className="prose prose-lg max-w-none text-gray-700 space-y-4 mb-6">
             <p>
               The transit method is the most successful technique for finding exoplanets. It works by detecting 
-              the tiny decrease in a star's brightness when a planet passes in front of it from our point of view.
+              the tiny decrease in a star&apos;s brightness when a planet passes in front of it from our point of view.
             </p>
             <p>
-              When a planet transits its host star, it blocks a small fraction of the star's light, creating 
+              When a planet transits its host star, it blocks a small fraction of the star&apos;s light, creating 
               a characteristic dip in the light curve. By repeatedly observing these transits, scientists can 
               confirm the presence of a planet and determine key properties like its size and orbital period.
             </p>
@@ -53,7 +53,7 @@ export default function LearnPage() {
         {/* Section 2: Space Missions */}
         <section className="mb-16">
           <h2 className="text-3xl font-semibold text-gray-900 mb-6">
-            NASA's Exoplanet Missions
+            NASA&apos;s Exoplanet Missions
           </h2>
           
           {/* Kepler */}
@@ -64,7 +64,7 @@ export default function LearnPage() {
 
             <div className="text-gray-700 space-y-3 mb-4">
               <p>
-                Kepler was NASA's first mission dedicated to finding Earth-sized planets in the habitable zones 
+                Kepler was NASA&apos;s first mission dedicated to finding Earth-sized planets in the habitable zones 
                 of distant stars. It stared at a single patch of sky containing over 150,000 stars for nearly 
                 four years. The mission discovered over 2,600 confirmed exoplanets and proved that planets are 
                 common in our galaxy.
@@ -89,10 +89,10 @@ export default function LearnPage() {
             </h3>
             <div className="text-gray-700 space-y-3 mb-4">
               <p>
-                After Kepler's reaction wheels failed, NASA repurposed the spacecraft for the K2 mission. 
+                After Kepler&apos;s reaction wheels failed, NASA repurposed the spacecraft for the K2 mission. 
                 Instead of staring at one field, K2 observed different fields of view along the ecliptic plane 
                 through multiple observation campaigns. The mission successfully discovered over 500 confirmed 
-                exoplanets, extending Kepler's legacy despite hardware limitations.
+                exoplanets, extending Kepler&apos;s legacy despite hardware limitations.
               </p>
             </div>
           </div>
@@ -105,7 +105,7 @@ export default function LearnPage() {
 
             <div className="text-gray-700 space-y-3 mb-4">
               <p>
-                The Transiting Exoplanet Survey Satellite (TESS) is NASA's current planet-hunting mission. 
+                The Transiting Exoplanet Survey Satellite (TESS) is NASA&apos;s current planet-hunting mission. 
                 Unlike Kepler, TESS surveys the entire sky, scanning 85% of it and focusing on nearby bright stars 
                 for follow-up studies. Since its launch, the mission has discovered over 400 confirmed exoplanets 
                 and continues to find more.

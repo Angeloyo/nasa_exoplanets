@@ -34,9 +34,15 @@ function getPredictionColor(prediction: string) {
   }
 }
 
+interface Prediction {
+  name: string;
+  prediction: string;
+  confidence: number;
+}
+
 export default function PredictPage() {
   const [file, setFile] = useState<File | null>(null);
-  const [predictions, setPredictions] = useState<any[]>([]);
+  const [predictions, setPredictions] = useState<Prediction[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>('all');
@@ -62,7 +68,7 @@ export default function PredictPage() {
       } else {
         setError(data.error || 'Something went wrong');
       }
-    } catch (err) {
+    } catch {
       setError('Failed to connect. Make sure the API is running on port 8000');
     } finally {
       setIsLoading(false);
