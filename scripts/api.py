@@ -1,50 +1,58 @@
 from fastapi import FastAPI, UploadFile, File
+from fastapi.middleware.cors import CORSMiddleware
 from pathlib import Path
-import shutil
-import subprocess
-
-from evaluation_ML import evaluate_ml_model, ML_MODELS_DIR
-from evaluation_NN import evaluate_nn_model, NN_MODELS_DIR
+import pandas as pd
+import joblib
+import random
 
 app = FastAPI(title="NASA Exoplanets API")
 
-UPLOAD_DIR = Path("data/processed/uploaded")
-UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
+MODEL_PATH = Path(__file__).parent.parent / "models/ML/xgboost/complex_data"
+CONSTELLATIONS = ["Draco", "Lyra", "Cygnus", "Andromeda", "Orion", "Perseus", 
+                  "Cassiopeia", "Phoenix", "Pegasus", "Vega", "Centaurus", "Aquila"]
+LABEL_MAP = {0: "None", 1: "Candidate", 2: "Exoplanet"}
 
-@app.post("/evaluate")
-async def evaluate_csv(file: UploadFile = File(...)):
-    # Guardar CSV en la carpeta de processed
-    file_path = UPLOAD_DIR / "uploaded.csv"
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
+def generate_name(index):
+    const = random.choice(CONSTELLATIONS)
+    num = random.randint(1, 99)
+    letter = random.choice("ABCDEFGH")
+    return f"{const}-{num}{letter}"
 
-    # Ejecutar el preprocesado para generar test_data.pkl
+@app.post("/predict")
+async def predict(file: UploadFile = File(...)):
     try:
-        subprocess.run(["python", "scripts/preprocess.py", str(file_path)], check=True)
-    except subprocess.CalledProcessError as e:
-        return {"error": f"Fallo en el preprocesado: {e}"}
+        df = pd.read_csv(file.file)
+        
+        if 'DISPOSITION_ENCODED' in df.columns:
+            df = df.drop(columns=['DISPOSITION_ENCODED'])
+        
+        model = joblib.load(MODEL_PATH / "model.pkl")
+        scaler = joblib.load(MODEL_PATH / "scaler.pkl")
+        
+        X_scaled = scaler.transform(df)
+        y_pred = model.predict(X_scaled)
+        y_proba = model.predict_proba(X_scaled)
+        
+        predictions = [
+            {
+                "name": generate_name(i),
+                "prediction": LABEL_MAP[y_pred[i]],
+                "confidence": round(float(y_proba[i][y_pred[i]] * 100), 1)
+            }
+            for i in range(len(y_pred))
+        ]
 
-    reports = {}
-
-    # Evaluar ML
-    for model_name in ["RandomForest", "XGBoost"]:
-        report_path = evaluate_ml_model(
-            model_name=model_name,
-            dataset_identifier="uploaded",
-            base_output_dir=ML_MODELS_DIR
-        )
-        reports[model_name] = str(report_path) if report_path else "Error"
-
-    # Evaluar NN
-    report_path = evaluate_nn_model(
-        dataset_identifier="uploaded",
-        base_output_dir=NN_MODELS_DIR
-    )
-    reports["NN Custom"] = str(report_path) if report_path else "Error"
-
-    return {"status": "ok", "reports": reports}
-
+        return {"status": "success", "model": "XGBoost", "total": len(predictions), "predictions": predictions}
+    
+    except Exception as e:
+        return {"status": "error", "error": str(e)}
 
 @app.get("/")
 def root():
