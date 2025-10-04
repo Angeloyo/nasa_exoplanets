@@ -26,14 +26,14 @@ import { Label } from "@/components/ui/label";
 import dynamic from 'next/dynamic';
 
 // Dynamically import Planet3D to avoid SSR issues with Three.js
-const Planet3D = dynamic(() => import('@/components/Planet3D'), {
-  ssr: false,
-  loading: () => (
-    <div className="w-full h-64 sm:h-80 rounded-xl bg-black flex items-center justify-center">
-      <Loader2 className="w-8 h-8 text-white animate-spin" />
-    </div>
-  ),
-});
+// const Planet3D = dynamic(() => import('@/components/Planet3D'), {
+//   ssr: false,
+//   loading: () => (
+//     <div className="w-full h-64 sm:h-80 rounded-xl bg-black flex items-center justify-center">
+//       <Loader2 className="w-8 h-8 text-white animate-spin" />
+//     </div>
+//   ),
+// });
 
 function getPredictionColor(prediction: string) {
   switch (prediction.toLowerCase()) {
