@@ -1,9 +1,11 @@
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 from pathlib import Path
 import pandas as pd
 import joblib
 import random
+import numpy as np
 
 app = FastAPI(title="NASA Exoplanets API")
 
@@ -18,6 +20,15 @@ MODEL_PATH = Path(__file__).parent / "models/ML/xgboost/complex_data"
 CONSTELLATIONS = ["Draco", "Lyra", "Cygnus", "Andromeda", "Orion", "Perseus", 
                   "Cassiopeia", "Phoenix", "Pegasus", "Vega", "Centaurus", "Aquila"]
 LABEL_MAP = {0: "None", 1: "Candidate", 2: "Exoplanet"}
+
+class SinglePredictionRequest(BaseModel):
+    PERIOD: float
+    RADIUS: float
+    DENSITY: float
+    NUM_PLANETS: float
+    DURATION: float
+    TEFF: float
+    DEPTH: float
 
 def generate_name(index):
     const = random.choice(CONSTELLATIONS)
@@ -50,6 +61,40 @@ async def predict(file: UploadFile = File(...)):
         ]
 
         return {"status": "success", "model": "XGBoost", "total": len(predictions), "predictions": predictions}
+    
+    except Exception as e:
+        return {"status": "error", "error": str(e)}
+
+@app.post("/predict/single")
+async def predict_single(data: SinglePredictionRequest):
+    try:
+        # Convert request data to DataFrame with correct column order
+        df = pd.DataFrame([[
+            data.PERIOD,
+            data.RADIUS,
+            data.DENSITY,
+            data.NUM_PLANETS,
+            data.DURATION,
+            data.TEFF,
+            data.DEPTH
+        ]], columns=['PERIOD', 'RADIUS', 'DENSITY', 'NUM_PLANETS', 'DURATION', 'TEFF', 'DEPTH'])
+        
+        # Load model and scaler
+        model = joblib.load(MODEL_PATH / "model.pkl")
+        scaler = joblib.load(MODEL_PATH / "scaler.pkl")
+        
+        # Scale and predict
+        X_scaled = scaler.transform(df)
+        y_pred = model.predict(X_scaled)
+        y_proba = model.predict_proba(X_scaled)
+        
+        prediction = {
+            "name": generate_name(0),
+            "prediction": LABEL_MAP[y_pred[0]],
+            "confidence": round(float(y_proba[0][y_pred[0]] * 100), 1)
+        }
+
+        return {"status": "success", "model": "XGBoost", "prediction": prediction}
     
     except Exception as e:
         return {"status": "error", "error": str(e)}
