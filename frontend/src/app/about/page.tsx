@@ -1,9 +1,9 @@
 export default function AboutPage() {
   const team = [
-    { name: 'Ángel Sanchez Guerrero', image: '/angel.jpeg', rotation: '-3deg', role: 'Frontend Development & UI/UX Design' },
-    { name: 'Raúl Martínez Alonso', image: '/raul.jpeg', rotation: '2deg', role: 'Data Science & documentation' },
-    { name: 'Javier Trujillo Castro', image: '/javi.jpeg', rotation: '-2deg', role: 'Machine Learning & content creator' },
-    { name: 'Pablo Tamayo López', image: '/pablo.jpeg', rotation: '3deg', role: 'Backend Development & content creator' },
+    { name: 'Ángel Sanchez Guerrero', image: '/angel.jpeg', imageOg: '/angelOg.jpg', rotation: '-3deg', role: 'Frontend Development & UI/UX Design' },
+    { name: 'Raúl Martínez Alonso', image: '/raul.jpeg', imageOg: '/raulOg.jpg', rotation: '2deg', role: 'Data Science & documentation' },
+    { name: 'Javier Trujillo Castro', image: '/javi.jpeg', imageOg: '/javiOg.jpg', rotation: '-2deg', role: 'Machine Learning & content creator' },
+    { name: 'Pablo Tamayo López', image: '/pablo.jpeg', imageOg: '/pabloOg.jpg', rotation: '3deg', role: 'Backend Development & content creator' },
   ];
 
   return (
@@ -25,7 +25,7 @@ export default function AboutPage() {
           {team.map((member, index) => (
             <div key={index} className="flex flex-col items-center">
               <div 
-                className="relative bg-white p-3 sm:p-4 shadow-lg border-4 border-gray-800 hover:scale-105 transition-transform duration-300"
+                className="relative bg-white p-3 sm:p-4 shadow-lg border-4 border-gray-800 hover:scale-105 transition-transform duration-300 group"
                 style={{ 
                   transform: `rotate(${member.rotation})`,
                   width: '160px',
@@ -36,7 +36,12 @@ export default function AboutPage() {
                   <img
                     src={member.image}
                     alt={member.name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0"
+                  />
+                  <img
+                    src={member.imageOg}
+                    alt={`${member.name} original`}
+                    className="w-full h-full object-cover absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
                   />
                 </div>
               </div>
@@ -56,4 +61,3 @@ export default function AboutPage() {
     </div>
   );
 }
-
