@@ -26,14 +26,14 @@ import { Label } from "@/components/ui/label";
 import dynamic from 'next/dynamic';
 
 // Dynamically import Planet3D to avoid SSR issues with Three.js
-// const Planet3D = dynamic(() => import('@/components/Planet3D'), {
-//   ssr: false,
-//   loading: () => (
-//     <div className="w-full h-64 sm:h-80 rounded-xl bg-black flex items-center justify-center">
-//       <Loader2 className="w-8 h-8 text-white animate-spin" />
-//     </div>
-//   ),
-// });
+const Planet3D = dynamic(() => import('@/components/Planet3D'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-64 sm:h-80 rounded-xl bg-black flex items-center justify-center">
+      <Loader2 className="w-8 h-8 text-white animate-spin" />
+    </div>
+  ),
+});
 
 function getPredictionColor(prediction: string) {
   switch (prediction.toLowerCase()) {
@@ -411,31 +411,31 @@ export default function PredictPage() {
             </div>
 
             {/* Stats Section */}
-            <div className="mt-8 sm:mt-12 grid grid-cols-3 gap-3 sm:gap-6">
+            <div className="mt-10 sm:mt-16 grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-12">
               <div className="text-center">
-                <div className="text-2xl sm:text-3xl font-bold text-green-700">{exoplanetsCount}</div>
-                <div className="text-xs sm:text-sm text-gray-600 mt-1">Exoplanets Discovered</div>
+                <div className="text-4xl sm:text-6xl font-extrabold text-green-700">{exoplanetsCount}</div>
+                <div className="text-base sm:text-lg text-gray-600 mt-2 font-medium">Exoplanets Discovered</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl sm:text-3xl font-bold text-yellow-600">{candidatesCount}</div>
-                <div className="text-xs sm:text-sm text-gray-600 mt-1">Candidates</div>
+                <div className="text-4xl sm:text-6xl font-extrabold text-yellow-600">{candidatesCount}</div>
+                <div className="text-base sm:text-lg text-gray-600 mt-2 font-medium">Candidates</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl sm:text-3xl font-bold text-red-600">{falsePositivesCount}</div>
-                <div className="text-xs sm:text-sm text-gray-600 mt-1">False Positives</div>
+                <div className="text-4xl sm:text-6xl font-extrabold text-red-600">{falsePositivesCount}</div>
+                <div className="text-base sm:text-lg text-gray-600 mt-2 font-medium">False Positives</div>
               </div>
             </div>
 
             {/* Charts Section */}
             <div className="mt-12 sm:mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-              <ConfidenceChart 
-                averageConfidence={averageConfidence}
-                totalPredictions={predictions.length}
-              />
               <PredictionDistributionChart
                 exoplanets={exoplanetsCount}
                 candidates={candidatesCount}
                 falsePositives={falsePositivesCount}
+              />
+              <ConfidenceChart 
+                averageConfidence={averageConfidence}
+                totalPredictions={predictions.length}
               />
               <ConfidencePerClassChart predictions={predictions} />
             </div>
@@ -457,13 +457,13 @@ export default function PredictPage() {
               </div>
 
               {/* 3D Planet Visualization */}
-              {/* <div className="w-full max-w-2xl">
+              <div className="w-full max-w-2xl">
                 <Planet3D
                   temperature={parseFloat(singleData.TEFF)}
                   radius={parseFloat(singleData.RADIUS)}
                   density={parseFloat(singleData.DENSITY)}
                 />
-              </div> */}
+              </div>
 
               {/* Main Prediction Card */}
               <div className={`w-full max-w-md rounded-xl p-6 sm:p-8 text-center shadow-md ${

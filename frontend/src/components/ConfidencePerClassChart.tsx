@@ -47,8 +47,8 @@ export function ConfidencePerClassChart({ predictions }: ConfidencePerClassChart
         <CardTitle className="text-xl">Confidence Per Class</CardTitle>
         <CardDescription>Average confidence by prediction type</CardDescription>
       </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig}>
+      <CardContent className="flex justify-center">
+        <ChartContainer config={chartConfig} className="h-[230px] w-full max-w-[260px]">
           <BarChart
             accessibilityLayer
             data={chartData}
