@@ -27,23 +27,23 @@ interface PredictionDistributionChartProps {
 const chartConfig = {
   exoplanet: {
     label: "Exoplanet",
-    color: "var(--chart-1)",
+    color: "hsl(142, 76%, 36%)", // Green
   },
   candidate: {
     label: "Candidate",
-    color: "var(--chart-2)",
+    color: "hsl(48, 96%, 53%)", // Yellow
   },
   none: {
     label: "False Positive",
-    color: "var(--chart-3)",
+    color: "hsl(0, 84%, 60%)", // Red
   },
 } satisfies ChartConfig
 
 export function PredictionDistributionChart({ exoplanets, candidates, falsePositives }: PredictionDistributionChartProps) {
   const chartData = [
-    { category: "exoplanet", count: exoplanets, fill: "var(--color-exoplanet)" },
-    { category: "candidate", count: candidates, fill: "var(--color-candidate)" },
-    { category: "none", count: falsePositives, fill: "var(--color-none)" },
+    { category: "exoplanet", count: exoplanets, fill: "hsl(142, 76%, 36%)" },
+    { category: "candidate", count: candidates, fill: "hsl(48, 96%, 53%)" },
+    { category: "none", count: falsePositives, fill: "hsl(0, 84%, 60%)" },
   ]
 
   return (

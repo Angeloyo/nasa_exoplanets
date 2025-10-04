@@ -28,19 +28,19 @@ interface CompositionDistributionChartProps {
 const chartConfig = {
   terrestrial: {
     label: "Terrestrial",
-    color: "var(--chart-1)",
+    color: "hsl(25, 70%, 50%)", // Brown
   },
   oceanWorld: {
     label: "Ocean World",
-    color: "var(--chart-2)",
+    color: "hsl(200, 80%, 50%)", // Blue
   },
   iceGiant: {
     label: "Ice Giant",
-    color: "var(--chart-3)",
+    color: "hsl(200, 70%, 70%)", // Light blue
   },
   gasGiant: {
     label: "Gas Giant",
-    color: "var(--chart-4)",
+    color: "hsl(0, 0%, 60%)", // Grey
   },
 } satisfies ChartConfig
 
@@ -51,10 +51,10 @@ export function CompositionDistributionChart({
   gasGiant 
 }: CompositionDistributionChartProps) {
   const chartData = [
-    { composition: "terrestrial", count: terrestrial, fill: "var(--color-terrestrial)" },
-    { composition: "oceanWorld", count: oceanWorld, fill: "var(--color-oceanWorld)" },
-    { composition: "iceGiant", count: iceGiant, fill: "var(--color-iceGiant)" },
-    { composition: "gasGiant", count: gasGiant, fill: "var(--color-gasGiant)" },
+    { composition: "terrestrial", count: terrestrial, fill: "hsl(25, 70%, 50%)" },
+    { composition: "oceanWorld", count: oceanWorld, fill: "hsl(200, 80%, 50%)" },
+    { composition: "iceGiant", count: iceGiant, fill: "hsl(200, 70%, 70%)" },
+    { composition: "gasGiant", count: gasGiant, fill: "hsl(0, 0%, 60%)" },
   ].filter(item => item.count > 0) // Only show compositions that exist
 
   return (
