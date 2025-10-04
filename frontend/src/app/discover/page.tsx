@@ -13,6 +13,7 @@ import {
 import { ConfidenceChart } from '@/components/ConfidenceChart';
 import { PredictionDistributionChart } from '@/components/PredictionDistributionChart';
 import { ConfidencePerClassChart } from '@/components/ConfidencePerClassChart';
+import { CompositionDistributionChart } from '@/components/CompositionDistributionChart';
 import {
   Select,
   SelectContent,
@@ -211,6 +212,29 @@ export default function PredictPage() {
   const exoplanetsCount = predictions.filter(p => p.prediction === 'Exoplanet').length;
   const candidatesCount = predictions.filter(p => p.prediction === 'Candidate').length;
   const falsePositivesCount = predictions.filter(p => p.prediction === 'None').length;
+
+  // Count compositions for exoplanets and candidates only
+  const validPredictions = predictions.filter(p => 
+    (p.prediction === 'Exoplanet' || p.prediction === 'Candidate') && 
+    p.radius !== undefined && 
+    p.density !== undefined
+  );
+  
+  const terrestrialCount = validPredictions.filter(p => 
+    getComposition(p.radius!, p.density!) === 'Terrestrial'
+  ).length;
+  
+  const oceanWorldCount = validPredictions.filter(p => 
+    getComposition(p.radius!, p.density!) === 'Ocean World'
+  ).length;
+  
+  const iceGiantCount = validPredictions.filter(p => 
+    getComposition(p.radius!, p.density!) === 'Ice Giant'
+  ).length;
+  
+  const gasGiantCount = validPredictions.filter(p => 
+    getComposition(p.radius!, p.density!) === 'Gas Giant'
+  ).length;
 
   const filteredPredictions = filter === 'all' 
     ? predictions 
@@ -498,11 +522,17 @@ export default function PredictPage() {
             </div>
 
             {/* Charts Section */}
-            <div className="mt-12 sm:mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+            <div className="mt-12 sm:mt-16 grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
               <PredictionDistributionChart
                 exoplanets={exoplanetsCount}
                 candidates={candidatesCount}
                 falsePositives={falsePositivesCount}
+              />
+              <CompositionDistributionChart
+                terrestrial={terrestrialCount}
+                oceanWorld={oceanWorldCount}
+                iceGiant={iceGiantCount}
+                gasGiant={gasGiantCount}
               />
               <ConfidenceChart 
                 averageConfidence={averageConfidence}

@@ -12,6 +12,8 @@ import {
 import {
   ChartConfig,
   ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
@@ -23,28 +25,25 @@ interface PredictionDistributionChartProps {
 }
 
 const chartConfig = {
-  count: {
-    label: "Count",
-  },
   exoplanet: {
     label: "Exoplanet",
-    color: "hsl(142, 76%, 36%)",
+    color: "var(--chart-1)",
   },
   candidate: {
     label: "Candidate",
-    color: "hsl(48, 96%, 53%)",
+    color: "var(--chart-2)",
   },
   none: {
     label: "False Positive",
-    color: "hsl(0, 84%, 60%)",
+    color: "var(--chart-3)",
   },
 } satisfies ChartConfig
 
 export function PredictionDistributionChart({ exoplanets, candidates, falsePositives }: PredictionDistributionChartProps) {
   const chartData = [
-    { category: "exoplanet", count: exoplanets, fill: "hsl(142, 76%, 36%)" },
-    { category: "candidate", count: candidates, fill: "hsl(48, 96%, 53%)" },
-    { category: "none", count: falsePositives, fill: "hsl(0, 84%, 60%)" },
+    { category: "exoplanet", count: exoplanets, fill: "var(--color-exoplanet)" },
+    { category: "candidate", count: candidates, fill: "var(--color-candidate)" },
+    { category: "none", count: falsePositives, fill: "var(--color-none)" },
   ]
 
   return (
@@ -56,14 +55,18 @@ export function PredictionDistributionChart({ exoplanets, candidates, falsePosit
       <CardContent className="flex-1 pb-0">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto aspect-square max-h-[250px]"
+          className="mx-auto aspect-square max-h-[300px]"
         >
           <PieChart>
             <ChartTooltip
               cursor={false}
-              content={<ChartTooltipContent hideLabel />}
+              content={<ChartTooltipContent nameKey="category" />}
             />
             <Pie data={chartData} dataKey="count" nameKey="category" />
+            <ChartLegend
+              content={<ChartLegendContent nameKey="category" />}
+              className="-translate-y-2 flex-wrap gap-2 [&>*]:justify-center [&>*]:whitespace-nowrap"
+            />
           </PieChart>
         </ChartContainer>
       </CardContent>
