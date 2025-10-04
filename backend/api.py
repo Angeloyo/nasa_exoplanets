@@ -76,7 +76,7 @@ async def predict_sample():
     try:
         # Load sample data
         # sample_path = Path(__file__).parent.parent / "data/sample/complex_data_sample_A.csv"
-        sample_path = Path(__file__).parent.parent / "data/sample/complex_data_sample_B.csv"
+        sample_path = "prod_sample_data.csv"
         df = pd.read_csv(sample_path)
         
         if 'DISPOSITION_ENCODED' in df.columns:
