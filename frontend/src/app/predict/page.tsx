@@ -23,17 +23,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import dynamic from 'next/dynamic';
 
-// Dynamically import Planet3D to avoid SSR issues with Three.js
-const Planet3D = dynamic(() => import('@/components/Planet3D'), {
-  ssr: false,
-  loading: () => (
-    <div className="w-full h-64 sm:h-80 rounded-xl bg-black flex items-center justify-center">
-      <Loader2 className="w-8 h-8 text-white animate-spin" />
-    </div>
-  ),
-});
 
 function getPredictionColor(prediction: string) {
   switch (prediction.toLowerCase()) {
@@ -454,15 +444,6 @@ export default function PredictPage() {
                 <h3 className="text-lg sm:text-3xl font-semibold ">
                   Object: {singlePrediction.name}
                 </h3>
-              </div>
-
-              {/* 3D Planet Visualization */}
-              <div className="w-full max-w-2xl">
-                <Planet3D
-                  temperature={parseFloat(singleData.TEFF)}
-                  radius={parseFloat(singleData.RADIUS)}
-                  density={parseFloat(singleData.DENSITY)}
-                />
               </div>
 
               {/* Main Prediction Card */}
