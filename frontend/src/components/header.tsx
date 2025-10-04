@@ -25,10 +25,10 @@ export function Header() {
         {/* Desktop Navigation */}
         <nav className="hidden md:flex gap-6 lg:gap-8">
           <Link 
-            href="/predict" 
+            href="/discover" 
             className="text-base font-medium hover:text-primary transition-colors"
           >
-            Predict
+            Discover
           </Link>
           <Link 
             href="/learn" 
@@ -63,11 +63,11 @@ export function Header() {
         <nav className="md:hidden border-t bg-white">
           <div className="container mx-auto px-4 py-4 flex flex-col gap-4">
             <Link 
-              href="/predict" 
+              href="/discover" 
               className="text-base font-medium hover:text-primary transition-colors py-2"
               onClick={() => setMobileMenuOpen(false)}
             >
-              Predict
+              Discover
             </Link>
             <Link 
               href="/learn" 

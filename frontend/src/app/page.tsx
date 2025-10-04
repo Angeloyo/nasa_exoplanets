@@ -37,11 +37,11 @@ export default function Home() {
 
           <div className="pointer-events-auto">
             <a
-              href="/predict"
+              href="/discover"
               className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-black bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white transition-colors duration-200"
             >
               <Sparkles className="mr-2 h-5 w-5" />
-              Predict Exoplanets
+              Start Discovering
             </a>
           </div>
 
