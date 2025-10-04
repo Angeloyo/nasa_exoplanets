@@ -60,7 +60,7 @@ export default function AboutPage() {
 
         <div className="mt-16 text-center">
           <span className="italic text-gray-500 text-sm">
-            We swear the drawings aren't AI-generated, Javi made them!
+            We swear the drawings aren&apos;t AI-generated, Javi made them!
           </span>
         </div>
       </div>
