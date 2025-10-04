@@ -90,13 +90,28 @@ python ./scripts/evaluation_ML.py
 python ./scripts/evaluation_NN.py
 ```
 ### Frontend
+1. Navigate to frontend directory:
+``` bash
+cd frontend
+npm install
+npm run dev
+```
 
-dsgsgs
+2. Open http://localhost:3000
 
-## 🖥️ Frontend
-- Allows users to upload csv to classify multiple objects at once.
+## 🚀 Deployment
 
-- Displays the classification result in real time.
+### Backend
+Deployed on [Railway](https://railway.app) using Docker containerization.
+- **URL**: https://api.exoexplorer.study
+- **CI/CD**: Automatic deployments from GitHub, set "backend" as base directory. 
+
+### Frontend
+Deployed on [Vercel](https://vercel.com).
+- **URL**: https://exoexplorer.study
+- **CI/CD**: Automatic deployments from GitHub, set "frontend" as base directory. 
+
+Both services automatically rebuild and deploy when changes are pushed to the repository.
 
 ## 🌍 Impact
 
