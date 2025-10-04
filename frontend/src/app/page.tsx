@@ -23,13 +23,13 @@ export default function Home() {
       </div>
 
       {/* Content */}
-      <main className="flex-1 flex items-center justify-center px-6 relative z-10 pointer-events-none">
-        <div className="max-w-4xl text-center space-y-8">
-          <div className="space-y-4">
-            <h2 className="text-5xl font-bold tracking-tight text-white">
+      <main className="flex-1 flex items-center justify-center px-4 sm:px-6 relative z-10 pointer-events-none">
+        <div className="max-w-4xl text-center space-y-6 sm:space-y-8">
+          <div className="space-y-3 sm:space-y-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white">
               Discover Exoplanets with AI
             </h2>
-            <p className="text-xl text-gray-300">
+            <p className="text-base sm:text-lg md:text-xl text-gray-300 px-4">
               Automated exoplanet detection using machine learning on NASA&apos;s Kepler, K2, and TESS datasets
             </p>
           </div>

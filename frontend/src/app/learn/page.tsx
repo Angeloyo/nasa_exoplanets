@@ -3,24 +3,24 @@ import Image from 'next/image';
 export default function LearnPage() {
   return (
     <div className="min-h-screen bg-white">
-      <div className="max-w-4xl mx-auto px-6 py-12">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         {/* Header */}
-        <div className="mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+        <div className="mb-8 sm:mb-12">
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">
             Understanding Exoplanet Detection
           </h1>
-          <p className="text-xl text-gray-600">
+          <p className="text-lg sm:text-xl text-gray-600">
             Learn how scientists discover planets beyond our solar system using space telescopes and machine learning
           </p>
         </div>
 
         {/* Section 1: Transit Method */}
-        <section className="mb-16">
-          <h2 className="text-3xl font-semibold text-gray-900 mb-4">
+        <section className="mb-12 sm:mb-16">
+          <h2 className="text-2xl sm:text-3xl font-semibold text-gray-900 mb-3 sm:mb-4">
             The Transit Method
           </h2>
 
-          <div className="prose prose-lg max-w-none text-gray-700 space-y-4 mb-6">
+          <div className="prose prose-base sm:prose-lg max-w-none text-gray-700 space-y-3 sm:space-y-4 mb-6">
             <p>
               The transit method is the most successful technique for finding exoplanets. It works by detecting 
               the tiny decrease in a star&apos;s brightness when a planet passes in front of it from our point of view.
@@ -51,14 +51,14 @@ export default function LearnPage() {
         </section>
 
         {/* Section 2: Space Missions */}
-        <section className="mb-16">
-          <h2 className="text-3xl font-semibold text-gray-900 mb-6">
+        <section className="mb-12 sm:mb-16">
+          <h2 className="text-2xl sm:text-3xl font-semibold text-gray-900 mb-4 sm:mb-6">
             NASA&apos;s Exoplanet Missions
           </h2>
           
           {/* Kepler */}
-          <div className="mb-12">
-            <h3 className="text-2xl font-semibold text-gray-900 mb-3">
+          <div className="mb-8 sm:mb-12">
+            <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-3">
               Kepler Mission (2009-2018)
             </h3>
 
@@ -83,8 +83,8 @@ export default function LearnPage() {
           </div>
 
           {/* K2 */}
-          <div className="mb-12">
-            <h3 className="text-2xl font-semibold text-gray-900 mb-3">
+          <div className="mb-8 sm:mb-12">
+            <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-3">
               K2 Mission (2014-2018)
             </h3>
             <div className="text-gray-700 space-y-3 mb-4">
@@ -98,8 +98,8 @@ export default function LearnPage() {
           </div>
 
           {/* TESS */}
-          <div className="mb-12">
-            <h3 className="text-2xl font-semibold text-gray-900 mb-3">
+          <div className="mb-8 sm:mb-12">
+            <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-3">
               TESS Mission (2018-Present)
             </h3>
 

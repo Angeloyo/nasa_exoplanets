@@ -93,34 +93,34 @@ export default function PredictPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="max-w-5xl mx-auto px-6 py-16">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12 md:py-16">
         
         {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-3">
+        <div className="text-center mb-8 sm:mb-12">
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">
             Exoplanet Prediction
           </h1>
-          <p className="text-lg text-gray-600">
+          <p className="text-base sm:text-lg text-gray-600">
             Upload your astronomical data to detect potential exoplanets
           </p>
         </div>
 
         {/* Upload Section */}
-        <div className="mb-12">
+        <div className="mb-8 sm:mb-12">
           
           {/* CSV Upload Area */}
-          <div className="mb-6">
+          <div className="mb-4 sm:mb-6">
             <label 
               htmlFor="csv-upload"
-              className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-gray-400 hover:bg-gray-50 transition-all duration-200"
+              className="flex flex-col items-center justify-center w-full h-36 sm:h-48 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-gray-400 hover:bg-gray-50 transition-all duration-200"
             >
-              <div className="flex flex-col items-center justify-center gap-3">
-                <Upload className="w-10 h-10 text-gray-400" />
+              <div className="flex flex-col items-center justify-center gap-2 sm:gap-3 px-4">
+                <Upload className="w-8 h-8 sm:w-10 sm:h-10 text-gray-400" />
                 <div className="text-center">
-                  <p className="text-base font-medium text-gray-700">
+                  <p className="text-sm sm:text-base font-medium text-gray-700">
                     {file ? file.name : 'Drop your CSV file here'}
                   </p>
-                  <p className="text-sm text-gray-500 mt-1">
+                  <p className="text-xs sm:text-sm text-gray-500 mt-1">
                     {file ? 'Click to change file' : 'or click to browse'}
                   </p>
                 </div>
@@ -136,8 +136,8 @@ export default function PredictPage() {
           </div>
 
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
-              <p className="text-sm text-red-700">{error}</p>
+            <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-red-50 border border-red-200 rounded-xl">
+              <p className="text-xs sm:text-sm text-red-700">{error}</p>
             </div>
           )}
 
@@ -145,16 +145,16 @@ export default function PredictPage() {
           <button
             onClick={handlePredict}
             disabled={!file || isLoading}
-            className="w-full bg-gray-900 text-white py-3 px-6 rounded-xl font-semibold hover:bg-gray-800 transition-colors duration-200 flex items-center justify-center gap-3 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-gray-900 text-white py-2.5 sm:py-3 px-4 sm:px-6 rounded-xl text-sm sm:text-base font-semibold hover:bg-gray-800 transition-colors duration-200 flex items-center justify-center gap-2 sm:gap-3 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? (
               <>
-                <Loader2 className="w-5 h-5 animate-spin" />
+                <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
                 Analyzing...
               </>
             ) : (
               <>
-                <Sparkles className="w-5 h-5" />
+                <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
                 Predict Exoplanets
               </>
             )}
@@ -166,17 +166,17 @@ export default function PredictPage() {
         {predictions.length > 0 && (
           <>
             <div>
-              <div className="mb-6 flex items-center justify-between">
+              <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                  <h2 className="text-2xl font-semibold text-gray-900">
+                  <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">
                     Prediction Results
                   </h2>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p className="text-xs sm:text-sm text-gray-600 mt-1">
                     {predictions.length} objects analyzed
                   </p>
                 </div>
                 <Select value={filter} onValueChange={setFilter}>
-                  <SelectTrigger className="w-48">
+                  <SelectTrigger className="w-full sm:w-48">
                     <SelectValue placeholder="Filter by type" />
                   </SelectTrigger>
                   <SelectContent>
@@ -188,27 +188,27 @@ export default function PredictPage() {
                 </Select>
               </div>
 
-              <div className="overflow-x-auto max-h-96 overflow-y-auto border border-gray-200 rounded-lg">
+              <div className="overflow-x-auto max-h-[400px] sm:max-h-96 overflow-y-auto border border-gray-200 rounded-lg">
                 <Table>
                   <TableHeader>
                     <TableRow className="hover:bg-transparent">
-                      <TableHead className="font-semibold text-gray-900">Object Name</TableHead>
-                      <TableHead className="font-semibold text-gray-900">Prediction</TableHead>
-                      <TableHead className="font-semibold text-gray-900 text-right">Confidence</TableHead>
+                      <TableHead className="font-semibold text-gray-900 text-xs sm:text-sm">Object Name</TableHead>
+                      <TableHead className="font-semibold text-gray-900 text-xs sm:text-sm">Prediction</TableHead>
+                      <TableHead className="font-semibold text-gray-900 text-right text-xs sm:text-sm">Confidence</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {filteredPredictions.map((result, index) => (
                       <TableRow key={index} className="hover:bg-gray-50">
-                        <TableCell className="font-medium text-gray-900">
+                        <TableCell className="font-medium text-gray-900 text-xs sm:text-sm">
                           {result.name}
                         </TableCell>
                         <TableCell>
-                          <span className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${getPredictionColor(result.prediction)}`}>
+                          <span className={`inline-flex px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs sm:text-sm font-medium ${getPredictionColor(result.prediction)}`}>
                             {result.prediction}
                           </span>
                         </TableCell>
-                        <TableCell className="text-right text-gray-700 font-medium">
+                        <TableCell className="text-right text-gray-700 font-medium text-xs sm:text-sm">
                           {result.confidence}%
                         </TableCell>
                       </TableRow>
@@ -219,23 +219,23 @@ export default function PredictPage() {
             </div>
 
             {/* Stats Section */}
-            <div className="mt-12 grid grid-cols-3 gap-6">
+            <div className="mt-8 sm:mt-12 grid grid-cols-3 gap-3 sm:gap-6">
               <div className="text-center">
-                <div className="text-3xl font-bold text-green-700">{exoplanetsCount}</div>
-                <div className="text-sm text-gray-600 mt-1">Exoplanets Discovered</div>
+                <div className="text-2xl sm:text-3xl font-bold text-green-700">{exoplanetsCount}</div>
+                <div className="text-xs sm:text-sm text-gray-600 mt-1">Exoplanets Discovered</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-yellow-600">{candidatesCount}</div>
-                <div className="text-sm text-gray-600 mt-1">Candidates</div>
+                <div className="text-2xl sm:text-3xl font-bold text-yellow-600">{candidatesCount}</div>
+                <div className="text-xs sm:text-sm text-gray-600 mt-1">Candidates</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-red-600">{falsePositivesCount}</div>
-                <div className="text-sm text-gray-600 mt-1">False Positives</div>
+                <div className="text-2xl sm:text-3xl font-bold text-red-600">{falsePositivesCount}</div>
+                <div className="text-xs sm:text-sm text-gray-600 mt-1">False Positives</div>
               </div>
             </div>
 
             {/* Charts Section */}
-            <div className="mt-16 grid grid-cols-3 gap-8">
+            <div className="mt-12 sm:mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
               <ConfidenceChart 
                 averageConfidence={averageConfidence}
                 totalPredictions={predictions.length}
