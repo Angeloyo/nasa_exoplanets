@@ -1,4 +1,5 @@
 import Galaxy from '@/components/Galaxy';
+import { Sparkles } from 'lucide-react';
 
 export default function Home() {
   return (
@@ -32,6 +33,16 @@ export default function Home() {
             <p className="text-base sm:text-lg md:text-xl text-gray-300 px-4">
               Automated exoplanet detection using machine learning on NASA&apos;s Kepler, K2, and TESS datasets
             </p>
+          </div>
+
+          <div className="pointer-events-auto">
+            <a
+              href="/predict"
+              className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-black bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white transition-colors duration-200"
+            >
+              <Sparkles className="mr-2 h-5 w-5" />
+              Predict Exoplanets
+            </a>
           </div>
 
         </div>
