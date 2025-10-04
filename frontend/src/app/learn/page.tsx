@@ -125,12 +125,11 @@ export default function LearnPage() {
         </section>
 
         {/* Section 3: Machine Learning */}
-
-        {/* <section className="mb-16">
-          <h2 className="text-3xl font-semibold text-gray-900 mb-4">
+        <section className="mb-12 sm:mb-16">
+          <h2 className="text-2xl sm:text-3xl font-semibold text-gray-900 mb-4 sm:mb-6">
             Machine Learning for Exoplanet Detection
           </h2>
-          <div className="prose prose-lg max-w-none text-gray-700 space-y-4">
+          <div className="prose prose-base sm:prose-lg max-w-none text-gray-700 space-y-3 sm:space-y-4 mb-6">
             <p>
               Traditionally, astronomers manually analyzed light curves to identify potential exoplanets—a 
               time-consuming process given the massive datasets from space missions. Machine learning offers 
@@ -142,8 +141,8 @@ export default function LearnPage() {
             </p>
             <ul className="list-disc list-inside space-y-2 ml-4">
               <li><strong>Orbital Period:</strong> Time it takes for a planet to complete one orbit</li>
-              <li><strong>Transit Duration:</strong> How long the planet blocks the star's light</li>
-              <li><strong>Transit Depth:</strong> How much the star's brightness decreases</li>
+              <li><strong>Transit Duration:</strong> How long the planet blocks the star&apos;s light</li>
+              <li><strong>Transit Depth:</strong> How much the star&apos;s brightness decreases</li>
               <li><strong>Planetary Radius:</strong> Size of the planet relative to its star</li>
               <li><strong>Stellar Parameters:</strong> Properties of the host star</li>
             </ul>
@@ -154,15 +153,96 @@ export default function LearnPage() {
               that might have been missed by manual analysis.
             </p>
           </div>
-        </section> */}
+        </section>
 
-        {/* Section 4: The Challenge */}
+        {/* Section 4: Our ML Approach */}
+        <section className="mb-12 sm:mb-16">
+          <h2 className="text-2xl sm:text-3xl font-semibold text-gray-900 mb-4 sm:mb-6">
+            Our Machine Learning Approach
+          </h2>
+          <div className="prose prose-base sm:prose-lg max-w-none text-gray-700 space-y-3 sm:space-y-4 mb-6">
+            <p>
+              For this project, we trained and evaluated multiple machine learning models including neural networks, 
+              random forest classifiers, and gradient boosting algorithms on data from Kepler, K2, and TESS missions.
+            </p>
+            <p>
+              After extensive experimentation and hyperparameter tuning, we found that <strong>XGBoost</strong> delivered 
+              the best performance with an impressive <strong>81% accuracy</strong> in classifying exoplanet observations 
+              into three categories: confirmed exoplanets, planetary candidates, and false positives.
+            </p>
+          </div>
 
-        {/* <section className="mb-16">
-          <h2 className="text-3xl font-semibold text-gray-900 mb-4">
+          {/* Model Performance Metrics */}
+          <div className="space-y-8 sm:space-y-12">
+            {/* Confusion Matrix */}
+            <div>
+              <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-3 sm:mb-4">
+                Confusion Matrix
+              </h3>
+              <p className="text-gray-700 mb-4">
+                The confusion matrix shows how well our model classifies each category. The diagonal values represent 
+                correct predictions, while off-diagonal values show misclassifications.
+              </p>
+              <div className="rounded-lg overflow-hidden border border-gray-300 bg-white p-4 max-w-lg mx-auto">
+                <Image 
+                  src="/confusion_matrix.jpeg" 
+                  alt="Confusion Matrix showing model performance"
+                  width={500}
+                  height={375}
+                  className="w-full h-auto"
+                />
+              </div>
+            </div>
+
+            {/* ROC Curves */}
+            <div>
+              <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-3 sm:mb-4">
+                ROC Curves
+              </h3>
+              <p className="text-gray-700 mb-4">
+                Receiver Operating Characteristic (ROC) curves demonstrate our model&apos;s ability to distinguish 
+                between classes. The high AUC scores (0.92 for none and candidate, 0.98 for confirmed) indicate 
+                excellent classification performance across all categories.
+              </p>
+              <div className="rounded-lg overflow-hidden border border-gray-300 bg-white p-4 max-w-lg mx-auto">
+                <Image 
+                  src="/multiclass_roc_curves.jpeg" 
+                  alt="Multiclass ROC Curves"
+                  width={500}
+                  height={375}
+                  className="w-full h-auto"
+                />
+              </div>
+            </div>
+
+            {/* Class Distribution */}
+            <div>
+              <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-3 sm:mb-4">
+                Predicted Class Distribution
+              </h3>
+              <p className="text-gray-700 mb-4">
+                This chart shows the distribution of predictions across the three classes in our test set, 
+                demonstrating how our model handles the varying frequencies of each category.
+              </p>
+              <div className="rounded-lg overflow-hidden border border-gray-300 bg-white p-4 max-w-lg mx-auto">
+                <Image 
+                  src="/predicted_class_distribution.jpeg" 
+                  alt="Predicted Class Distribution"
+                  width={500}
+                  height={375}
+                  className="w-full h-auto"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Section 5: Why This Matters */}
+        <section className="mb-12 sm:mb-16">
+          <h2 className="text-2xl sm:text-3xl font-semibold text-gray-900 mb-4 sm:mb-6">
             Why Automated Detection Matters
           </h2>
-          <div className="prose prose-lg max-w-none text-gray-700 space-y-4">
+          <div className="prose prose-base sm:prose-lg max-w-none text-gray-700 space-y-3 sm:space-y-4">
             <p>
               With missions like TESS generating enormous amounts of data, automated classification becomes 
               essential. Machine learning can:
@@ -175,12 +255,12 @@ export default function LearnPage() {
               <li>Discover rare or unusual planetary systems</li>
             </ul>
             <p>
-              This project uses publicly available data from Kepler, K2, and TESS to train machine learning 
-              models that can automatically detect exoplanets, helping advance our understanding of planets 
-              beyond our solar system.
+              Our XGBoost model, trained on publicly available data from Kepler, K2, and TESS, demonstrates 
+              that machine learning can effectively automate exoplanet detection, helping advance our understanding 
+              of planets beyond our solar system.
             </p>
           </div>
-        </section> */}
+        </section>
 
 
       </div>
