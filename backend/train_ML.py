@@ -8,7 +8,7 @@ from xgboost import XGBClassifier
 
 # --- Constantes y Configuración ---
 PROCESSED_DIR = Path('data/processed')
-ROOT_MODELS_DIR = Path('models') # Directorio raíz de modelos
+ROOT_MODELS_DIR = Path('backend/models') # Directorio raíz de modelos
 RANDOM_STATE = 42
 TEST_SIZE = 0.2
 
@@ -161,42 +161,6 @@ if __name__ == "__main__":
         'n_estimators': 300, # Sobrescribir el default de 200
         'max_depth': 12,     # Sobrescribir el default de 10
     }
-
-    # ======================================================
-    # 1. Random Forest en SIMPLE (Usando parámetros personalizados RF)
-    # ======================================================
-    print("\n======================================================")
-    train_ml_model(
-        model_name='RandomForest',
-        data_path=simple_data_path,
-        output_dir=ML_MODELS_DIR,
-        model_params=rf_custom_params
-    )
-    # Ruta: models/ML/randomforest/simple_data/model.pkl
-
-    # ======================================================
-    # 2. Random Forest en COMPLEX (Usando parámetros personalizados RF)
-    # ======================================================
-    print("\n======================================================")
-    train_ml_model(
-        model_name='RandomForest',
-        data_path=complex_data_path,
-        output_dir=ML_MODELS_DIR,
-        model_params=rf_custom_params
-    )
-    # Ruta: models/ML/randomforest/complex_data/model.pkl
-
-    # ======================================================
-    # 3. XGBoost en SIMPLE (Usando parámetros personalizados XGB)
-    # ======================================================
-    print("\n======================================================")
-    train_ml_model(
-        model_name='XGBoost',
-        data_path=simple_data_path,
-        output_dir=ML_MODELS_DIR,
-        model_params=xgb_custom_params
-    )
-    # Ruta: models/ML/xgboost/simple_data/model.pkl
 
     # ======================================================
     # 4. XGBoost en COMPLEX (Usando parámetros personalizados XGB)

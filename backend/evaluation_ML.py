@@ -8,7 +8,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split # Necesario para la prueba de sample
 
 # --- Constantes y Mapeo ---
-ROOT_MODELS_DIR = Path('models')
+ROOT_MODELS_DIR = Path('backend/models')
 ML_MODELS_DIR = ROOT_MODELS_DIR / 'ML'
 
 # --- Rutas de datos (Añadidas para la prueba de sample) ---
@@ -185,28 +185,9 @@ if __name__ == "__main__":
     
     # Evaluación estándar
     evaluation_targets = [
-        ('RandomForest', 'simple_data'),
-        ('RandomForest', 'complex_data'),
-        ('XGBoost', 'simple_data'),
         ('XGBoost', 'complex_data'),
     ]
 
     for model_name, dataset_id in evaluation_targets:
         evaluate_ml_model(model_name, dataset_id, ML_MODELS_DIR)
-
-    # --- NUEVA PRUEBA: EVALUAR CON EL SAMPLE (complex_data_sample) ---
-    print("\n======================================================")
-    print("Iniciando Evaluación con el Sample (5% de complex_data)...")
-    
-    # 1. Necesitamos un modelo base entrenado con 'complex_data'. Elegimos RandomForest.
-    model_to_test = 'RandomForest' 
-    
-    # 2. Preparamos el sample (lo escalamos y guardamos el test_data.pkl)
-    sample_id = prepare_sample_for_evaluation(DATA_SAMPLE_PATH, model_to_test, ML_MODELS_DIR)
-    
-    if sample_id:
-        # 3. Ejecutamos la evaluación usando el nuevo identificador de sample.
-        # Esto buscará los artefactos en models/ML/randomforest/complex_data_sample/
-        evaluate_ml_model(model_to_test, sample_id, ML_MODELS_DIR)
-
     print("======================================================")
