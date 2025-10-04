@@ -38,10 +38,39 @@ function getPredictionColor(prediction: string) {
   }
 }
 
+function getComposition(radius: number, density: number): string {
+  // Terrestrial - High density, rocky composition
+  // Examples: Earth (1 R⊕, 5.5 g/cm³), Venus, Mercury
+  if (density >= 3.5) {
+    return 'Terrestrial';
+  }
+  
+  // Ocean World - Medium-high density with significant water/ice
+  if (density >= 2 && density < 3.5) {
+    return 'Ocean World';
+  }
+  
+  // Ice Giant - Medium density, ice and gas composition
+  // Examples: Neptune (3.9 R⊕, 1.64 g/cm³), Uranus (4 R⊕, 1.27 g/cm³)
+  if (density >= 1 && density < 2) {
+    return 'Ice Giant';
+  }
+  
+  // Gas Giant - Low density, hydrogen/helium dominated
+  // Examples: Jupiter (11.2 R⊕, 1.33 g/cm³), Saturn (9.4 R⊕, 0.69 g/cm³)
+  if (density < 1) {
+    return 'Gas Giant';
+  }
+  
+  return 'Unknown';
+}
+
 interface Prediction {
   name: string;
   prediction: string;
   confidence: number;
+  radius?: number;
+  density?: number;
 }
 
 export default function PredictPage() {
@@ -376,6 +405,7 @@ export default function PredictPage() {
                     <TableRow className="hover:bg-transparent">
                       <TableHead className="font-semibold text-gray-900 text-xs sm:text-sm">Object Name</TableHead>
                       <TableHead className="font-semibold text-gray-900 text-xs sm:text-sm">Prediction</TableHead>
+                      <TableHead className="font-semibold text-gray-900 text-xs sm:text-sm">Composition</TableHead>
                       <TableHead className="font-semibold text-gray-900 text-right text-xs sm:text-sm">Confidence</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -389,6 +419,11 @@ export default function PredictPage() {
                           <span className={`inline-flex px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs sm:text-sm font-medium ${getPredictionColor(result.prediction)}`}>
                             {result.prediction}
                           </span>
+                        </TableCell>
+                        <TableCell className="text-gray-700 text-xs sm:text-sm">
+                          {(result.prediction === 'Exoplanet' || result.prediction === 'Candidate') && result.radius && result.density
+                            ? getComposition(result.radius, result.density)
+                            : '—'}
                         </TableCell>
                         <TableCell className="text-right text-gray-700 font-medium text-xs sm:text-sm">
                           {result.confidence}%
@@ -466,6 +501,19 @@ export default function PredictPage() {
                 }`}>
                   {singlePrediction.prediction}
                 </p>
+                
+                {/* Composition Type */}
+                {(singlePrediction.prediction === 'Exoplanet' || singlePrediction.prediction === 'Candidate') && (
+                  <div className="mb-4">
+                    <p className="text-sm sm:text-base font-medium text-gray-600 mb-1">
+                      Composition Type
+                    </p>
+                    <p className="text-lg sm:text-xl font-semibold text-gray-900">
+                      {getComposition(parseFloat(singleData.RADIUS), parseFloat(singleData.DENSITY))}
+                    </p>
+                  </div>
+                )}
+                
                 <div className="pt-4 border-t border-gray-300">
                   <p className="text-sm sm:text-base font-medium text-gray-600 mb-1">
                     Confidence Level

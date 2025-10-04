@@ -44,6 +44,10 @@ async def predict(file: UploadFile = File(...)):
         if 'DISPOSITION_ENCODED' in df.columns:
             df = df.drop(columns=['DISPOSITION_ENCODED'])
         
+        # Store radius and density before scaling
+        radius_values = df['RADIUS'].values if 'RADIUS' in df.columns else None
+        density_values = df['DENSITY'].values if 'DENSITY' in df.columns else None
+        
         model = joblib.load(MODEL_PATH / "model.pkl")
         scaler = joblib.load(MODEL_PATH / "scaler.pkl")
         
@@ -55,7 +59,9 @@ async def predict(file: UploadFile = File(...)):
             {
                 "name": generate_name(i),
                 "prediction": LABEL_MAP[y_pred[i]],
-                "confidence": round(float(y_proba[i][y_pred[i]] * 100), 1)
+                "confidence": round(float(y_proba[i][y_pred[i]] * 100), 1),
+                "radius": float(radius_values[i]) if radius_values is not None else None,
+                "density": float(density_values[i]) if density_values is not None else None
             }
             for i in range(len(y_pred))
         ]
