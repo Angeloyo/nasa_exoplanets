@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import MLResultsDashboard from '@/components/MLResultsDashboard';
 
 export default function LearnPage() {
   return (
@@ -171,71 +172,10 @@ export default function LearnPage() {
               into three categories: confirmed exoplanets, planetary candidates, and false positives.
             </p>
           </div>
-
-          {/* Model Performance Metrics */}
-          <div className="space-y-8 sm:space-y-12">
-            {/* Confusion Matrix */}
-            <div>
-              <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-3 sm:mb-4">
-                Confusion Matrix
-              </h3>
-              <p className="text-gray-700 mb-4">
-                The confusion matrix shows how well our model classifies each category. The diagonal values represent 
-                correct predictions, while off-diagonal values show misclassifications.
-              </p>
-              <div className="rounded-lg overflow-hidden border border-gray-300 bg-white p-4 max-w-lg mx-auto">
-                <Image 
-                  src="/confusion_matrix.jpeg" 
-                  alt="Confusion Matrix showing model performance"
-                  width={500}
-                  height={375}
-                  className="w-full h-auto"
-                />
-              </div>
-            </div>
-
-            {/* ROC Curves */}
-            <div>
-              <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-3 sm:mb-4">
-                ROC Curves
-              </h3>
-              <p className="text-gray-700 mb-4">
-                Receiver Operating Characteristic (ROC) curves demonstrate our model&apos;s ability to distinguish 
-                between classes. The high AUC scores (0.92 for none and candidate, 0.98 for confirmed) indicate 
-                excellent classification performance across all categories.
-              </p>
-              <div className="rounded-lg overflow-hidden border border-gray-300 bg-white p-4 max-w-lg mx-auto">
-                <Image 
-                  src="/multiclass_roc_curves.jpeg" 
-                  alt="Multiclass ROC Curves"
-                  width={500}
-                  height={375}
-                  className="w-full h-auto"
-                />
-              </div>
-            </div>
-
-            {/* Class Distribution */}
-            <div>
-              <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-3 sm:mb-4">
-                Predicted Class Distribution
-              </h3>
-              <p className="text-gray-700 mb-4">
-                This chart shows the distribution of predictions across the three classes in our test set, 
-                demonstrating how our model handles the varying frequencies of each category.
-              </p>
-              <div className="rounded-lg overflow-hidden border border-gray-300 bg-white p-4 max-w-lg mx-auto">
-                <Image 
-                  src="/predicted_class_distribution.jpeg" 
-                  alt="Predicted Class Distribution"
-                  width={500}
-                  height={375}
-                  className="w-full h-auto"
-                />
-              </div>
-            </div>
-          </div>
         </section>
+
+        {/* ML Results Dashboard */}
+        <MLResultsDashboard />
 
         {/* Section 5: Why This Matters */}
         <section className="mb-12 sm:mb-16">
