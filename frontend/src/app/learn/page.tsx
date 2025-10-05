@@ -231,7 +231,7 @@ export default function LearnPage() {
                   </p>
                 </div>
 
-                <div className="bg-green-50 border border-green-200 p-5 rounded-lg">
+                {/* <div className="bg-green-50 border border-green-200 p-5 rounded-lg">
                   <div className="flex items-start gap-3">
                     <div className="flex-shrink-0 w-12 h-12 bg-green-600 text-white rounded-full flex items-center justify-center text-xl font-bold">
                       81%
@@ -245,7 +245,7 @@ export default function LearnPage() {
                       </p>
                     </div>
                   </div>
-                </div>
+                </div> */}
 
                 <div className="space-y-3 mt-6">
                   <h4 className="font-semibold text-gray-900">Why This Matters</h4>
