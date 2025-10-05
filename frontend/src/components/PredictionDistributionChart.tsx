@@ -12,6 +12,8 @@ import {
 import {
   ChartConfig,
   ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
@@ -23,20 +25,17 @@ interface PredictionDistributionChartProps {
 }
 
 const chartConfig = {
-  count: {
-    label: "Count",
-  },
   exoplanet: {
     label: "Exoplanet",
-    color: "hsl(142, 76%, 36%)",
+    color: "hsl(142, 76%, 36%)", // Green
   },
   candidate: {
     label: "Candidate",
-    color: "hsl(48, 96%, 53%)",
+    color: "hsl(48, 96%, 53%)", // Yellow
   },
   none: {
     label: "False Positive",
-    color: "hsl(0, 84%, 60%)",
+    color: "hsl(0, 84%, 60%)", // Red
   },
 } satisfies ChartConfig
 
@@ -56,14 +55,18 @@ export function PredictionDistributionChart({ exoplanets, candidates, falsePosit
       <CardContent className="flex-1 pb-0">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto aspect-square max-h-[250px]"
+          className="mx-auto aspect-square max-h-[300px]"
         >
           <PieChart>
             <ChartTooltip
               cursor={false}
-              content={<ChartTooltipContent hideLabel />}
+              content={<ChartTooltipContent nameKey="category" />}
             />
             <Pie data={chartData} dataKey="count" nameKey="category" />
+            <ChartLegend
+              content={<ChartLegendContent nameKey="category" />}
+              className="-translate-y-2 flex-wrap gap-2 [&>*]:justify-center [&>*]:whitespace-nowrap"
+            />
           </PieChart>
         </ChartContainer>
       </CardContent>
