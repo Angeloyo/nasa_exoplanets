@@ -1,7 +1,8 @@
 
 # Exo Explorer
 
-## 🌌 A 2025 NASA Space Apps Challenge: **A World Away: Hunting for Exoplanets with AI**
+## 🌌 A 2025 NASA Space Apps Challenge
+### **A World Away: Hunting for Exoplanets with AI**
 
 This project was developed for the NASA Space Apps Challenge 2025 under the challenge **A World Away: Hunting for Exoplanets with AI**.
 
@@ -39,7 +40,7 @@ We trained and compared several models:
 
 - 🔍 Basic neural net with 2 layers
 
-XGBoost achieved the best performance with 80% accuracy on validation data.
+XGBoost achieved the best performance with 81.4% accuracy.
 
 ## 🔧 Installation & Execution
 
@@ -53,19 +54,19 @@ pip install -r requirements
 Consist in the steps: 
 - **Preprocessing**
 ``` bash
-python ./scripts/preprocess.py
+python ./backend/preprocess.py
 ```
 
 - **Training**
 ``` bash
-python ./scripts/train_ML.py
-python ./scripts/train_NN.py
+python ./backend/train_ML.py
+python ./backend/train_NN.py
 ```
 
 - **Evaluation**
 ``` bash
-python ./scripts/evaluation_ML.py
-python ./scripts/evaluation_NN.py
+python ./backend/evaluation_ML.py
+python ./backend/evaluation_NN.py
 ```
 ### Frontend
 1. Navigate to frontend directory:
